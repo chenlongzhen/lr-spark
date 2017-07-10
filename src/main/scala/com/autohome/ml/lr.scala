@@ -1,4 +1,5 @@
-package com.autohome.ml.lr
+package com.autohome.ml
+
 import org.apache.log4j.{Level, LogManager, Logger}
 import org.apache.spark.ml.classification.LogisticRegressionModel
 import org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS
