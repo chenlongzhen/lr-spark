@@ -81,24 +81,23 @@ object lr extends App {
     // Split data into training (60%) and test (40%).
     logger.info("PROCESS DATA")
 
-    val allData  = if (test_path == '1') {
+    val allData = if (test_path == '1') {
       val useData: Array[RDD[LabeledPoint]] = process_data(sc, input_path, 0.9)
 
-      val trainData = useData(0)
+      val trainData = useData(0).cache()
       val testData = useData(1)
       Array(trainData,testData)
     }else{
       val useData: Array[RDD[LabeledPoint]] = process_data(sc, input_path, 0)
       val useData2: Array[RDD[LabeledPoint]] = process_data(sc, input_path, 0)
 
-      val trainData = useData(0)
+      val trainData = useData(0).cache()
       val testData = useData2(0)
       Array(trainData,testData)
     }
 
     val trainData = allData(0)
     val testData = allData(1)
-
     // Run training algorithm to build the model
     logger.info("TRAIN DATA")
     val model = new LogisticRegressionWithLBFGS()
@@ -109,7 +108,7 @@ object lr extends App {
 
 
     // Compute raw scores on the test set.
-    logger.info("predict DATA")
+    logger.info("predict test DATA")
     val predictionAndLabels = testData.map { case LabeledPoint(label, features) =>
       val prediction = model.predict(features)
       (prediction, label)
@@ -119,8 +118,22 @@ object lr extends App {
     val metrics = new BinaryClassificationMetrics(predictionAndLabels)
     val auROC = metrics.areaUnderROC
     logger.info(auROC)
+
+
+
+    logger.info("predict  train DATA")
+    val predictionAndLabels2 = testData.map { case LabeledPoint(label, features) =>
+      val prediction = model.predict(features)
+      (prediction, label)
+    }
+
+    val metrics2 = new BinaryClassificationMetrics(predictionAndLabels)
+    val auROC2 = metrics2.areaUnderROC
+    logger.info(auROC2)
+
+    logger.info(s"train $auROC, test $auROC2")
     // Save and load model
-    model.save(sc, "target/tmp/scalaLogisticRegressionWithLBFGSModel")
+    //model.save(sc, "target/tmp/scalaLogisticRegressionWithLBFGSModel")
     //val sameModel = LogisticRegressionModel.load(sc,"/tmp")
 
   }
