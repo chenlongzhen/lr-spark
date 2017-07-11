@@ -50,7 +50,7 @@ object lr extends App {
 
     val train: RDD[String] = indiceChange(sc,path_in)
     val util = new MyUtil
-    val data: RDD[LabeledPoint] = util.loadLibSVMFile(sc, train,numFeatures = -1).persist(StorageLevel.MEMORY_AND_DISK)
+    val data: RDD[LabeledPoint] = util.loadLibSVMFile(sc, train,numFeatures = -1).repartition(1000).persist(StorageLevel.MEMORY_AND_DISK)
     if (ifSplit > 0 && ifSplit < 1){
       val splitRdd: Array[RDD[LabeledPoint]] = data.randomSplit(Array(10*ifSplit,10*(1-ifSplit)),2017)
       return splitRdd
