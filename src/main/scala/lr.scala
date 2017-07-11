@@ -96,7 +96,7 @@ object lr extends App {
       Array(trainData,testData)
     }
 
-    val trainData = allData(0).cache()
+    val trainData = allData(0)
     val testData = allData(1)
 
     // Run training algorithm to build the model
