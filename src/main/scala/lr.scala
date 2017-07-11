@@ -62,6 +62,7 @@ object lr extends App {
   override def main(args: Array[String]): Unit = {
 
     val input_path = args(0)
+    val test_path = args(1)
 
     val jobName = "lr_clz"
     //val input_path = "/team/ad_wajue/chenlongzhen/mobai/train_file.data"
@@ -79,9 +80,24 @@ object lr extends App {
 
     // Split data into training (60%) and test (40%).
     logger.info("PROCESS DATA")
-    val useData: Array[RDD[LabeledPoint]] = process_data(sc,input_path,0.9)
-    val trainData = useData(0).cache()
-    val testData = useData(1)
+
+    val allData  = if (test_path == '1') {
+      val useData: Array[RDD[LabeledPoint]] = process_data(sc, input_path, 0.9)
+
+      val trainData = useData(0)
+      val testData = useData(1)
+      Array(trainData,testData)
+    }else{
+      val useData: Array[RDD[LabeledPoint]] = process_data(sc, input_path, 0)
+      val useData2: Array[RDD[LabeledPoint]] = process_data(sc, input_path, 0)
+
+      val trainData = useData(0)
+      val testData = useData2(0)
+      Array(trainData,testData)
+    }
+
+    val trainData = allData(0).cache()
+    val testData = allData(1)
 
     // Run training algorithm to build the model
     logger.info("TRAIN DATA")
