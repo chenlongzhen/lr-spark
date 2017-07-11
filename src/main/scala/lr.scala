@@ -44,7 +44,7 @@ object lr extends App {
     }
     train
   }
-  
+
 
   def process_data(sc:SparkContext,path_in:String,ifSplit:Double):Array[RDD[LabeledPoint]]={
 
@@ -61,8 +61,10 @@ object lr extends App {
 
   override def main(args: Array[String]): Unit = {
 
+    val input_path = args(0)
+
     val jobName = "lr_clz"
-    val input_path = "/team/ad_wajue/chenlongzhen/mobai/train_file.data"
+    //val input_path = "/team/ad_wajue/chenlongzhen/mobai/train_file.data"
 
     // print warn
     Logger.getLogger("org.apache.spark").setLevel(Level.WARN)
@@ -77,7 +79,7 @@ object lr extends App {
 
     // Split data into training (60%) and test (40%).
     logger.info("PROCESS DATA")
-    val useData: Array[RDD[LabeledPoint]] = process_data(sc,input_path,0.6)
+    val useData: Array[RDD[LabeledPoint]] = process_data(sc,input_path,0.9)
     val trainData = useData(0).cache()
     val testData = useData(1)
 
