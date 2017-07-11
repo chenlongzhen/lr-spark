@@ -22,7 +22,7 @@ object lr extends App {
     val train: RDD[String] = data.map {
       line =>
         val segs: Array[String] = line.split(' ')
-        val label = if (segs(0) == "1") "1" else "-1"
+        val label = if (segs(0) == "1") "1" else "0"
         val features = segs.drop(1)
         // add indices 1
         val features_process: Array[String] = features.map {
@@ -75,11 +75,13 @@ object lr extends App {
 
 
     // Split data into training (60%) and test (40%).
+    logger.info("PROCESS DATA")
     val useData: Array[RDD[LabeledPoint]] = process_data(sc,input_path,0.6)
     val trainData = useData(0).cache()
     val testData = useData(1)
 
     // Run training algorithm to build the model
+    logger.info("TRAIN DATA")
     val model = new LogisticRegressionWithLBFGS()
         .setIntercept(true)
         .setValidateData(true)
@@ -88,6 +90,7 @@ object lr extends App {
 
 
     // Compute raw scores on the test set.
+    logger.info("predict DATA")
     val predictionAndLabels = testData.map { case LabeledPoint(label, features) =>
       val prediction = model.predict(features)
       (prediction, label)
