@@ -91,7 +91,7 @@ object lr extends App {
       val useData: Array[RDD[LabeledPoint]] = process_data(sc, input_path, 0)
       val useData2: Array[RDD[LabeledPoint]] = process_data(sc, input_path, 0)
 
-      val trainData = useData(0).cache()
+      val trainData = useData(0)
       val testData = useData2(0)
       Array(trainData,testData)
     }
