@@ -44,6 +44,7 @@ object lr extends App {
     }
     train
   }
+  
 
   def process_data(sc:SparkContext,path_in:String,ifSplit:Double):Array[RDD[LabeledPoint]]={
 
